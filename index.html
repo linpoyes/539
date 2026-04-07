@@ -344,7 +344,7 @@ function render() {
             </div>`;
           }).join('')}</div>
         <div class="actions-row">
-          <button class="btn btn-sm btn-outline" onclick="exportData()">📤 匯出</button>
+          <button class="btn btn-sm btn-outline" onclick="exportData()">📰 匯出報表</button>
           <button class="btn btn-sm btn-outline" onclick="importData()">📥 匯入</button>
           <button class="btn btn-sm btn-danger" onclick="clearAll()">🗑 清除</button>
         </div>`}
@@ -504,9 +504,170 @@ function delRecord(i) { historyData.splice(i, 1); save(); render(); }
 function clearAll() { if (confirm('確定清除？')) { historyData = []; save(); render(); } }
 
 function exportData() {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(historyData, null, 2)], {type:'application/json'}));
-  a.download = '539_history.json'; a.click();
+  if (historyData.length === 0) return alert('尚無資料可匯出');
+
+  // Build newspaper-style HTML
+  const today = todayStr();
+  const data = historyData.slice().reverse(); // newest first
+  
+  // Frequency stats
+  const freq = {};
+  for (let i = 1; i <= 39; i++) freq[i] = 0;
+  historyData.forEach(r => r.nums.forEach(n => freq[n]++));
+  const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]);
+  const hot5 = sorted.slice(0, 5).map(x => `${String(x[0]).padStart(2,'0')}(${x[1]}次)`).join('、');
+  const cold5 = sorted.slice(-5).reverse().map(x => `${String(x[0]).padStart(2,'0')}(${x[1]}次)`).join('、');
+
+  // Split into columns (newspaper style)
+  const half = Math.ceil(data.length / 2);
+  const col1 = data.slice(0, half);
+  const col2 = data.slice(half);
+
+  const buildCol = (arr) => arr.map(r => 
+    `<tr><td class="dt">${r.date}</td>${r.nums.map(n => `<td class="nm">${String(n).padStart(2,'0')}</td>`).join('')}</tr>`
+  ).join('');
+
+  const printHTML = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  @page { size: A4; margin: 12mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif; color: #1a1a1a; background: #fffdf5; }
+
+  .paper { max-width: 210mm; margin: 0 auto; padding: 10mm; }
+
+  /* ===== 報頭 ===== */
+  .masthead {
+    text-align: center; border-bottom: 4px double #1a1a1a; padding-bottom: 10px; margin-bottom: 6px;
+  }
+  .masthead-top {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; color: #666; margin-bottom: 4px;
+  }
+  .masthead h1 {
+    font-size: 36px; font-weight: 900; letter-spacing: 12px;
+    color: #8b0000;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+  }
+  .masthead .slogan {
+    font-size: 12px; color: #8b0000; letter-spacing: 4px; margin-top: 2px; font-weight: 700;
+  }
+
+  /* ===== 頭條 ===== */
+  .headline {
+    text-align: center; padding: 10px 0 8px;
+    border-bottom: 2px solid #1a1a1a; margin-bottom: 8px;
+  }
+  .headline h2 {
+    font-size: 22px; font-weight: 900; letter-spacing: 2px;
+  }
+  .headline .sub { font-size: 12px; color: #555; margin-top: 4px; }
+
+  /* ===== 統計摘要 ===== */
+  .summary {
+    display: flex; gap: 12px; margin-bottom: 10px;
+    border-bottom: 1px solid #ccc; padding-bottom: 10px;
+  }
+  .summary-box {
+    flex: 1; padding: 8px 10px;
+    border: 1px solid #ccc; background: #fffef8;
+  }
+  .summary-box .label { font-size: 10px; color: #8b0000; font-weight: 700; margin-bottom: 3px; letter-spacing: 2px; }
+  .summary-box .val { font-size: 11px; line-height: 1.6; }
+
+  /* ===== 號碼表格 ===== */
+  .cols { display: flex; gap: 10px; }
+  .col { flex: 1; }
+  .col-header {
+    background: #1a1a1a; color: #fff; text-align: center;
+    padding: 4px; font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 3px 4px; font-size: 10px; border-bottom: 1px solid #e0d8c8; }
+  .dt { color: #666; width: 72px; font-size: 9px; }
+  .nm {
+    text-align: center; font-weight: 700; font-size: 12px;
+    width: 28px; font-family: "Courier New", monospace;
+  }
+  tr:nth-child(even) { background: #fdfaf0; }
+
+  /* ===== 頁尾 ===== */
+  .footer {
+    margin-top: 10px; padding-top: 6px;
+    border-top: 2px solid #1a1a1a;
+    display: flex; justify-content: space-between;
+    font-size: 9px; color: #999;
+  }
+
+  .stamp {
+    position: absolute; top: 50%; right: 20mm;
+    transform: translateY(-50%) rotate(-15deg);
+    font-size: 48px; font-weight: 900;
+    color: rgba(139,0,0,0.06);
+    letter-spacing: 8px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  @media print {
+    body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .paper { padding: 0; }
+  }
+</style>
+</head><body>
+<div class="paper" style="position:relative;">
+  <div class="stamp">大發利市</div>
+
+  <div class="masthead">
+    <div class="masthead-top">
+      <span>第 ${historyData.length} 期資料收錄</span>
+      <span>民國 ${new Date().getFullYear() - 1911} 年</span>
+      <span>${today} 印製</span>
+    </div>
+    <h1>今彩五三九</h1>
+    <div class="slogan">開 獎 號 碼 總 覽</div>
+  </div>
+
+  <div class="headline">
+    <h2>歷 史 開 獎 紀 錄</h2>
+    <div class="sub">資料期間：${data[data.length-1]?.date || ''} ～ ${data[0]?.date || ''} ｜ 共 ${data.length} 期</div>
+  </div>
+
+  <div class="summary">
+    <div class="summary-box">
+      <div class="label">🔥 熱門號碼 TOP 5</div>
+      <div class="val">${hot5}</div>
+    </div>
+    <div class="summary-box">
+      <div class="label">🧊 冷門號碼 TOP 5</div>
+      <div class="val">${cold5}</div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="col-header">開 獎 紀 錄（一）</div>
+      <table>${buildCol(col1)}</table>
+    </div>
+    <div class="col">
+      <div class="col-header">開 獎 紀 錄（二）</div>
+      <table>${buildCol(col2)}</table>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>今彩539預測系統 自動產出</span>
+    <span>僅供參考，請理性投注</span>
+    <span>印製日期：${today}</span>
+  </div>
+</div>
+<script>window.onload=()=>{window.print();}<\/script>
+</body></html>`;
+
+  const blob = new Blob([printHTML], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, '_blank');
+  if (!w) alert('請允許彈出視窗以匯出 PDF');
 }
 
 function importData() {
