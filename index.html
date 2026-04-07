@@ -538,8 +538,26 @@ function exportData() {
   const col1 = data.slice(0, half);
   const col2 = data.slice(half);
 
+  // Calculate period number from date: format 民國年+6位流水號
+  // 539 draws Mon-Sat, period resets each year
+  function calcPeriod(dateStr) {
+    const [y, m, d] = dateStr.split('/').map(Number);
+    const rocYear = y - 1911;
+    // Count draw days from Jan 1 of that year to this date
+    const startOfYear = new Date(y, 0, 1);
+    const thisDate = new Date(y, m - 1, d);
+    let drawCount = 0;
+    const cur = new Date(startOfYear);
+    while (cur <= thisDate) {
+      const dow = cur.getDay(); // 0=Sun
+      if (dow >= 1 && dow <= 6) drawCount++; // Mon-Sat
+      cur.setDate(cur.getDate() + 1);
+    }
+    return `${rocYear}${String(drawCount).padStart(6, '0')}`;
+  }
+
   const buildCol = (arr) => arr.map(r => 
-    `<tr><td class="dt">${r.date}</td>${r.nums.map(n => `<td class="nm">${String(n).padStart(2,'0')}</td>`).join('')}</tr>`
+    `<tr><td class="prd">${calcPeriod(r.date)}</td><td class="dt">${r.date}</td>${r.nums.map(n => `<td class="nm">${String(n).padStart(2,'0')}</td>`).join('')}</tr>`
   ).join('');
 
   const printHTML = `<!DOCTYPE html>
@@ -595,7 +613,8 @@ function exportData() {
   }
   table { width: 100%; border-collapse: collapse; }
   td { padding: 3px 4px; font-size: 10px; border-bottom: 1px solid #e0d8c8; }
-  .dt { color: #666; width: 72px; font-size: 9px; }
+  .prd { color: #8b0000; width: 68px; font-size: 9px; font-weight: 700; font-family: "Courier New", monospace; }
+  .dt { color: #666; width: 66px; font-size: 9px; }
   .nm {
     text-align: center; font-weight: 700; font-size: 12px;
     width: 28px; font-family: "Courier New", monospace;
@@ -653,11 +672,11 @@ function exportData() {
 
   <div class="cols">
     <div class="col">
-      <div class="col-header">開 獎 紀 錄（一）</div>
+      <div class="col-header">期別 ｜ 日期 ｜ 開獎號碼</div>
       <table>${buildCol(col1)}</table>
     </div>
     <div class="col">
-      <div class="col-header">開 獎 紀 錄（二）</div>
+      <div class="col-header">期別 ｜ 日期 ｜ 開獎號碼</div>
       <table>${buildCol(col2)}</table>
     </div>
   </div>
