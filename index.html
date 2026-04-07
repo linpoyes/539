@@ -298,6 +298,7 @@
 const APP_KEY = 'lotto539_data_v3';
 let historyData = JSON.parse(localStorage.getItem(APP_KEY) || '[]');
 let fetchStatusObj = null;
+let selectedCount = '100';
 
 function save() { localStorage.setItem(APP_KEY, JSON.stringify(historyData)); }
 
@@ -319,11 +320,11 @@ function render() {
       <div class="input-row">
         <div class="input-group">
           <label>抓取期數</label>
-          <select id="fetchCount">
-            <option value="30">最近 30 期</option>
-            <option value="60">最近 60 期</option>
-            <option value="100" selected>最近 100 期</option>
-            <option value="200">最近 200 期</option>
+          <select id="fetchCount" onchange="selectedCount=this.value">
+            <option value="30" ${selectedCount==='30'?'selected':''}>最近 30 期</option>
+            <option value="60" ${selectedCount==='60'?'selected':''}>最近 60 期</option>
+            <option value="100" ${selectedCount==='100'?'selected':''}>最近 100 期</option>
+            <option value="200" ${selectedCount==='200'?'selected':''}>最近 200 期</option>
           </select>
         </div>
       </div>
@@ -362,13 +363,7 @@ function render() {
       <div class="card-title"><span class="icon">🎯</span> AI 預測號碼</div>
       ${historyData.length < 3 
         ? '<div class="empty-state">至少需要 <b>3 期</b>歷史資料才能預測</div>'
-        : `<div style="margin-bottom:12px;">
-          <span class="method-tag">頻率分析</span>
-          <span class="method-tag">冷熱交替</span>
-          <span class="method-tag">間隔統計</span>
-          <span class="method-tag">權重計算</span>
-        </div>
-        <button class="btn btn-gold" onclick="predict()">⚡ 產生今日預測號碼</button>
+        : `<button class="btn btn-gold" onclick="predict()">⚡ 產生今日預測號碼</button>
         <div id="predictResult"></div>`}
       <div class="disclaimer"></div>
     </div>
