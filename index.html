@@ -5,22 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>今彩539 預測系統</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@400;700;900&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --bg: #0a0a1a;
-    --surface: #12122a;
-    --surface2: #1a1a3a;
-    --gold: #f0c040;
-    --neon-blue: #00d4ff;
-    --neon-purple: #a855f7;
-    --text: #e8e8f0;
-    --text-dim: #8888aa;
-    --red: #ef4444;
-    --green: #22c55e;
-    --border: rgba(255,255,255,0.06);
+    --bg: #0c0804;
+    --surface: linear-gradient(165deg, #1a1308 0%, #0f0b04 50%, #1a1308 100%);
+    --gold-bright: #ffd700;
+    --gold: #d4a017;
+    --gold-dark: #8b6914;
+    --gold-dim: #6b5210;
+    --cream: #f5e6c8;
+    --text: #f0e0c0;
+    --text-dim: #a08a60;
+    --red: #c0392b;
+    --green: #d4a017;
+    --border-gold: rgba(212,160,23,0.25);
+    --border-gold-bright: rgba(255,215,0,0.4);
+    --glow: rgba(255,215,0,0.15);
   }
 
   body {
@@ -30,181 +33,260 @@
     min-height: 100vh;
     overflow-x: hidden;
   }
+
+  /* Luxurious background pattern */
   body::before {
     content: '';
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: 
-      radial-gradient(ellipse at 20% 0%, rgba(168,85,247,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 100%, rgba(0,212,255,0.06) 0%, transparent 60%);
+    background:
+      radial-gradient(ellipse at 50% -20%, rgba(255,215,0,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 120%, rgba(212,160,23,0.04) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='rgba(212,160,23,0.04)' stroke-width='0.5'/%3E%3C/svg%3E");
     pointer-events: none; z-index: 0;
+  }
+
+  /* Watermark */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='200'%3E%3Ctext x='50%25' y='50%25' font-family='Noto Sans TC,sans-serif' font-size='14' font-weight='700' fill='rgba(212,160,23,0.03)' text-anchor='middle' dominant-baseline='middle' transform='rotate(-45,180,100)'%3E僅供參考 請理性投注%3C/text%3E%3C/svg%3E");
+    background-repeat: repeat;
   }
 
   .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 40px; position: relative; z-index: 1; }
 
-  .header { text-align: center; padding: 30px 0 20px; }
-  .header h1 {
-    font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900;
-    background: linear-gradient(135deg, var(--gold), #ffe08a, var(--gold));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px;
+  /* ===== HEADER ===== */
+  .header { text-align: center; padding: 36px 0 24px; position: relative; }
+  .header::before {
+    content: '💰';
+    display: block;
+    font-size: 40px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 20px rgba(255,215,0,0.4));
   }
-  .header .sub { font-size: 13px; color: var(--text-dim); margin-top: 6px; letter-spacing: 4px; }
+  .header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 42px;
+    font-weight: 900;
+    background: linear-gradient(180deg, #fff8dc 0%, #ffd700 25%, #d4a017 50%, #ffd700 75%, #fff8dc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 12px;
+    filter: drop-shadow(0 2px 8px rgba(255,215,0,0.3));
+  }
+  .header .sub {
+    font-size: 14px;
+    color: var(--gold);
+    margin-top: 8px;
+    letter-spacing: 6px;
+    font-weight: 500;
+  }
+  .header .line {
+    width: 120px;
+    height: 2px;
+    margin: 14px auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--gold-bright), var(--gold), transparent);
+    border-radius: 1px;
+  }
 
+  /* ===== CARD ===== */
   .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 16px; padding: 20px; margin-bottom: 16px;
-    position: relative; overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border-gold);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,215,0,0.08);
   }
   .card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--neon-purple), var(--neon-blue), transparent); opacity: 0.6;
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent 5%, var(--gold-dark), var(--gold-bright), var(--gold-dark), transparent 95%);
+  }
+  .card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent 10%, rgba(212,160,23,0.15), transparent 90%);
   }
   .card-title {
-    font-size: 15px; font-weight: 700; color: var(--neon-blue);
+    font-size: 15px; font-weight: 700; color: var(--gold-bright);
     margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
   }
   .card-title .icon {
-    width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
-    background: rgba(0,212,255,0.1); border-radius: 6px; font-size: 14px;
+    width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(212,160,23,0.08));
+    border: 1px solid rgba(255,215,0,0.2);
+    border-radius: 7px; font-size: 14px;
   }
 
+  /* ===== SELECT ===== */
   .input-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-end; }
   .input-group { flex: 1; }
   .input-group label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
-  .input-group input, .input-group select {
-    width: 100%; padding: 10px 12px; background: var(--bg);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-    color: var(--text); font-size: 15px; font-family: 'Orbitron', sans-serif; outline: none; transition: border-color 0.2s;
+  .input-group select {
+    width: 100%; padding: 11px 14px; 
+    background: rgba(26,19,8,0.8);
+    border: 1px solid var(--border-gold);
+    border-radius: 10px;
+    color: var(--cream); font-size: 14px; font-family: 'Noto Sans TC', sans-serif;
+    outline: none; transition: all 0.3s;
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23d4a017' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center;
   }
-  .input-group input:focus, .input-group select:focus { border-color: var(--neon-blue); box-shadow: 0 0 12px rgba(0,212,255,0.15); }
-  .input-group input::placeholder { color: #555; font-family: 'Noto Sans TC', sans-serif; font-size: 13px; }
-  .input-group select option { background: var(--bg); color: var(--text); }
+  .input-group select:focus { border-color: var(--gold-bright); box-shadow: 0 0 16px var(--glow); }
+  .input-group select option { background: #1a1308; color: var(--cream); }
 
-  .number-inputs { display: flex; gap: 6px; }
-  .number-inputs input {
-    width: 100%; text-align: center; padding: 10px 4px; background: var(--bg);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-    color: var(--gold); font-size: 18px; font-family: 'Orbitron', sans-serif;
-    font-weight: 700; outline: none; transition: all 0.2s;
-  }
-  .number-inputs input:focus { border-color: var(--gold); box-shadow: 0 0 12px rgba(240,192,64,0.2); }
-
+  /* ===== BUTTONS ===== */
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     padding: 12px 20px; border: none; border-radius: 10px;
     font-size: 14px; font-weight: 700; font-family: 'Noto Sans TC', sans-serif;
-    cursor: pointer; transition: all 0.25s; width: 100%;
+    cursor: pointer; transition: all 0.3s; width: 100%;
+    position: relative;
   }
   .btn:active { transform: scale(0.97); }
-  .btn-primary { background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: #fff; box-shadow: 0 4px 20px rgba(0,212,255,0.2); }
-  .btn-gold { background: linear-gradient(135deg, var(--gold), #e6a800); color: #1a1a2e; box-shadow: 0 4px 20px rgba(240,192,64,0.25); font-size: 16px; padding: 14px 20px; }
-  .btn-green { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; box-shadow: 0 4px 20px rgba(34,197,94,0.2); }
-  .btn-sm { padding: 8px 14px; font-size: 13px; width: auto; }
-  .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--text-dim); }
-  .btn-outline:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
-  .btn-danger { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .history-list { max-height: 300px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--surface2) transparent; }
-  .history-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 10px; }
+  .btn-fetch {
+    background: linear-gradient(135deg, #8b6914, #d4a017, #ffd700, #d4a017, #8b6914);
+    background-size: 200% 100%;
+    color: #1a0f00;
+    font-size: 15px;
+    padding: 14px 20px;
+    border: 1px solid rgba(255,215,0,0.4);
+    box-shadow: 0 4px 24px rgba(255,215,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2);
+    text-shadow: 0 1px 0 rgba(255,215,0,0.3);
+    animation: btnShimmer 3s ease-in-out infinite;
+  }
+  @keyframes btnShimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .btn-fetch:hover { box-shadow: 0 6px 32px rgba(255,215,0,0.35); }
+
+  .btn-gold {
+    background: linear-gradient(135deg, #d4a017, #ffd700, #fff8dc, #ffd700, #d4a017);
+    background-size: 200% 100%;
+    color: #1a0f00;
+    font-size: 16px; padding: 14px 20px;
+    border: 1px solid rgba(255,215,0,0.5);
+    box-shadow: 0 4px 28px rgba(255,215,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+    text-shadow: 0 1px 0 rgba(255,215,0,0.4);
+    animation: btnShimmer 3s ease-in-out infinite;
+  }
+  .btn-gold:hover { box-shadow: 0 8px 40px rgba(255,215,0,0.45); }
+
+  .btn-sm { padding: 8px 14px; font-size: 13px; width: auto; }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-gold);
+    color: var(--gold);
+  }
+  .btn-outline:hover { border-color: var(--gold-bright); color: var(--gold-bright); box-shadow: 0 0 12px var(--glow); }
+  .btn-danger {
+    background: rgba(192,57,43,0.12);
+    border: 1px solid rgba(192,57,43,0.3);
+    color: #e74c3c;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ===== HISTORY ===== */
+  .history-list { max-height: 300px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--gold-dark) transparent; }
+  .history-item {
+    display: flex; align-items: center; padding: 10px 0;
+    border-bottom: 1px solid rgba(212,160,23,0.08); gap: 10px;
+  }
   .history-item:last-child { border-bottom: none; }
   .history-date { font-size: 11px; color: var(--text-dim); min-width: 80px; font-family: 'Orbitron', sans-serif; }
   .history-balls { display: flex; gap: 5px; flex: 1; }
   .ball {
     width: 34px; height: 34px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 13px; color: #fff;
-    background: linear-gradient(145deg, #2a2a5a, #1a1a3a); border: 2px solid rgba(255,255,255,0.1);
+    font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 13px;
+    color: var(--cream);
+    background: radial-gradient(circle at 35% 35%, #3d2e10, #1a1308);
+    border: 1.5px solid var(--gold-dark);
+    text-shadow: 0 0 4px rgba(255,215,0,0.2);
   }
-  .history-del { background: none; border: none; color: #555; cursor: pointer; font-size: 16px; padding: 4px; }
-  .history-del:hover { color: var(--red); }
+  .history-del { background: none; border: none; color: var(--gold-dim); cursor: pointer; font-size: 16px; padding: 4px; }
+  .history-del:hover { color: #e74c3c; }
 
+  /* ===== PREDICTION ===== */
   .predict-result { text-align: center; padding: 10px 0; }
-  .predict-balls { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+  .predict-balls { display: flex; justify-content: center; gap: 12px; margin: 24px 0; }
   .predict-ball {
-    width: 56px; height: 56px; border-radius: 50%;
+    width: 58px; height: 58px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 20px; color: #1a1a2e;
-    background: linear-gradient(145deg, #ffe08a, var(--gold), #c8960a);
-    box-shadow: 0 4px 20px rgba(240,192,64,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
-    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    font-family: 'Cinzel', serif; font-weight: 900; font-size: 21px;
+    color: #1a0f00;
+    background: radial-gradient(circle at 35% 30%, #fff8dc, #ffd700 40%, #d4a017 70%, #8b6914);
+    border: 2px solid rgba(255,248,220,0.5);
+    box-shadow:
+      0 4px 20px rgba(255,215,0,0.4),
+      0 8px 40px rgba(212,160,23,0.2),
+      inset 0 2px 4px rgba(255,255,255,0.4),
+      inset 0 -2px 6px rgba(139,105,20,0.3);
+    animation: coinDrop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    text-shadow: 0 1px 0 rgba(255,215,0,0.5);
   }
   .predict-ball:nth-child(2) { animation-delay: 0.1s; }
   .predict-ball:nth-child(3) { animation-delay: 0.2s; }
   .predict-ball:nth-child(4) { animation-delay: 0.3s; }
   .predict-ball:nth-child(5) { animation-delay: 0.4s; }
-  @keyframes popIn { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+  @keyframes coinDrop {
+    0% { transform: translateY(-40px) scale(0) rotateY(180deg); opacity: 0; }
+    60% { transform: translateY(4px) scale(1.1) rotateY(0deg); opacity: 1; }
+    100% { transform: translateY(0) scale(1) rotateY(0deg); opacity: 1; }
+  }
 
+  /* ===== FREQ GRID ===== */
   .freq-grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 3px; }
   .freq-cell {
-    aspect-ratio: 1; border-radius: 6px;
+    aspect-ratio: 1; border-radius: 5px;
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; font-weight: 700; font-family: 'Orbitron', sans-serif;
-    position: relative; cursor: default; transition: transform 0.15s;
+    position: relative; cursor: default; transition: all 0.2s;
   }
-  .freq-cell:hover { transform: scale(1.2); z-index: 2; }
+  .freq-cell:hover { transform: scale(1.25); z-index: 2; box-shadow: 0 0 12px var(--glow); }
   .freq-cell .tip {
-    display: none; position: absolute; bottom: 110%;
-    background: var(--surface2); color: var(--text); padding: 4px 8px; border-radius: 6px;
+    display: none; position: absolute; bottom: 115%;
+    background: #1a1308; color: var(--cream); padding: 4px 10px; border-radius: 6px;
     font-size: 11px; white-space: nowrap; font-family: 'Noto Sans TC', sans-serif;
-    border: 1px solid var(--border); z-index: 10;
+    border: 1px solid var(--border-gold); z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
   }
   .freq-cell:hover .tip { display: block; }
 
   .method-tag {
     display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px;
-    background: rgba(168,85,247,0.15); color: var(--neon-purple); border: 1px solid rgba(168,85,247,0.2); margin: 2px;
+    background: rgba(212,160,23,0.1); color: var(--gold); border: 1px solid rgba(212,160,23,0.2); margin: 2px;
   }
-  .disclaimer { text-align: center; font-size: 11px; color: #555; margin-top: 12px; line-height: 1.6; }
+  .disclaimer { display: none; }
   .empty-state { text-align: center; color: var(--text-dim); padding: 30px 0; font-size: 13px; }
   .actions-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
   .badge {
-    display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 10px;
-    font-size: 12px; background: rgba(0,212,255,0.1); color: var(--neon-blue); margin-left: auto;
+    display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 10px;
+    font-size: 12px;
+    background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(212,160,23,0.05));
+    color: var(--gold);
+    border: 1px solid rgba(212,160,23,0.15);
+    margin-left: auto;
   }
 
+  /* ===== FETCH STATUS ===== */
   .fetch-status {
     padding: 10px 14px; border-radius: 10px; font-size: 13px; margin-top: 12px; line-height: 1.6;
   }
-  .fetch-status.loading { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.15); color: var(--neon-blue); }
-  .fetch-status.success { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.15); color: var(--green); }
-  .fetch-status.error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.15); color: var(--red); }
+  .fetch-status.loading { background: rgba(212,160,23,0.06); border: 1px solid rgba(212,160,23,0.15); color: var(--gold); }
+  .fetch-status.success { background: rgba(212,160,23,0.08); border: 1px solid rgba(212,160,23,0.2); color: var(--gold-bright); }
+  .fetch-status.error { background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.2); color: #e74c3c; }
 
   @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
   .loading-bar {
     height: 3px; border-radius: 2px; margin: 8px 0;
-    background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), transparent);
+    background: linear-gradient(90deg, transparent, var(--gold-dark), var(--gold-bright), var(--gold-dark), transparent);
     background-size: 200% 100%; animation: shimmer 1.5s infinite;
-  }
-
-  .fetch-info {
-    font-size: 12px; color: var(--text-dim); margin-top: 10px; line-height: 1.7;
-    background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;
-    border: 1px dashed rgba(255,255,255,0.06);
-  }
-  .fetch-info code {
-    background: rgba(0,212,255,0.1); padding: 1px 6px; border-radius: 4px;
-    font-size: 11px; color: var(--neon-blue);
-  }
-
-  .tab-row { display: flex; gap: 6px; margin-bottom: 14px; }
-  .tab-btn {
-    flex: 1; padding: 10px; text-align: center; border-radius: 10px;
-    font-size: 13px; font-weight: 700; cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.08); background: var(--bg); color: var(--text-dim);
-    transition: all 0.2s; font-family: 'Noto Sans TC', sans-serif;
-  }
-  .tab-btn.active { background: rgba(0,212,255,0.1); border-color: var(--neon-blue); color: var(--neon-blue); }
-
-  .gas-box {
-    margin-top: 12px; padding: 14px; background: var(--bg); border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.08);
-  }
-  .gas-box input {
-    width: 100%; padding: 8px 12px; background: var(--surface2);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
-    color: var(--neon-blue); font-size: 12px; outline: none; margin: 8px 0;
-    font-family: monospace;
   }
 </style>
 </head>
@@ -216,8 +298,6 @@
 const APP_KEY = 'lotto539_data_v3';
 let historyData = JSON.parse(localStorage.getItem(APP_KEY) || '[]');
 let fetchStatusObj = null;
-let inputTab = 'fetch';
-let showGAS = false;
 
 function save() { localStorage.setItem(APP_KEY, JSON.stringify(historyData)); }
 
@@ -229,23 +309,32 @@ function todayStr() {
 function render() {
   document.getElementById('app').innerHTML = `
     <div class="header">
-      <h1>539 PREDICT</h1>
+      <h1>5 3 9</h1>
       <div class="sub">今 彩 預 測 系 統</div>
+      <div class="line"></div>
     </div>
 
     <div class="card">
-      <div class="card-title"><span class="icon">📝</span> 新增開獎紀錄</div>
-      <div class="tab-row">
-        <button class="tab-btn ${inputTab==='fetch'?'active':''}" onclick="inputTab='fetch';render()">🌐 線上抓取</button>
-        <button class="tab-btn ${inputTab==='manual'?'active':''}" onclick="inputTab='manual';render()">✏️ 手動輸入</button>
+      <div class="card-title"><span class="icon">🌐</span> 開獎紀錄</div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>抓取期數</label>
+          <select id="fetchCount">
+            <option value="30">最近 30 期</option>
+            <option value="60">最近 60 期</option>
+            <option value="100" selected>最近 100 期</option>
+            <option value="200">最近 200 期</option>
+          </select>
+        </div>
       </div>
-      ${inputTab === 'manual' ? renderManual() : renderFetch()}
+      <button class="btn btn-fetch" onclick="fetchData()" id="fetchBtn">🌐 台彩號碼紀錄</button>
+      ${fetchStatusObj ? `<div class="fetch-status ${fetchStatusObj.type}">${fetchStatusObj.type === 'loading' ? '<div class="loading-bar"></div>' : ''}${fetchStatusObj.msg}</div>` : ''}
     </div>
 
     <div class="card">
       <div class="card-title"><span class="icon">📊</span> 歷史紀錄 <span class="badge">${historyData.length} 期</span></div>
       ${historyData.length === 0 
-        ? '<div class="empty-state">尚無紀錄，請先抓取或手動輸入開獎號碼</div>' 
+        ? '<div class="empty-state">尚無紀錄，請先抓取開獎號碼</div>' 
         : `<div class="history-list">${historyData.slice().reverse().map((r, ri) => {
             const idx = historyData.length - 1 - ri;
             return `<div class="history-item">
@@ -282,86 +371,9 @@ function render() {
         </div>
         <button class="btn btn-gold" onclick="predict()">⚡ 產生今日預測號碼</button>
         <div id="predictResult"></div>`}
-      <div class="disclaimer">⚠ 僅供娛樂參考，不保證中獎，請理性投注</div>
+      <div class="disclaimer"></div>
     </div>
   `;
-}
-
-function renderManual() {
-  return `
-    <div class="input-row">
-      <div class="input-group">
-        <label>開獎日期</label>
-        <input type="text" id="dateInput" placeholder="例: 2026/04/07" value="${todayStr()}" />
-      </div>
-    </div>
-    <label style="font-size:12px;color:var(--text-dim);margin-bottom:6px;display:block;">開獎號碼 (1-39)</label>
-    <div class="number-inputs">
-      <input type="number" id="n1" min="1" max="39" placeholder="01">
-      <input type="number" id="n2" min="1" max="39" placeholder="02">
-      <input type="number" id="n3" min="1" max="39" placeholder="03">
-      <input type="number" id="n4" min="1" max="39" placeholder="04">
-      <input type="number" id="n5" min="1" max="39" placeholder="05">
-    </div>
-    <div style="margin-top:12px;">
-      <button class="btn btn-primary" onclick="addRecord()">✚ 新增紀錄</button>
-    </div>`;
-}
-
-function renderFetch() {
-  const gasUrl = localStorage.getItem('gasProxyUrl') || '';
-  return `
-    <div class="input-row">
-      <div class="input-group">
-        <label>抓取期數</label>
-        <select id="fetchCount">
-          <option value="30">最近 30 期</option>
-          <option value="60">最近 60 期</option>
-          <option value="100" selected>最近 100 期</option>
-          <option value="200">最近 200 期</option>
-        </select>
-      </div>
-    </div>
-    <button class="btn btn-green" onclick="fetchData()" id="fetchBtn">🌐 一鍵抓取台彩歷史開獎號碼</button>
-    ${fetchStatusObj ? `<div class="fetch-status ${fetchStatusObj.type}">${fetchStatusObj.type === 'loading' ? '<div class="loading-bar"></div>' : ''}${fetchStatusObj.msg}</div>` : ''}
-    
-    <div class="fetch-info">
-      💡 資料來源：<b>樂透彩幸運發財網</b> (pilio.idv.tw)<br>
-      透過 CORS Proxy 抓取，若失敗可自建 GAS Proxy。
-      <button class="btn btn-sm btn-outline" style="margin-top:8px;" onclick="showGAS=!showGAS;render()">
-        ${showGAS ? '▲ 收起' : '⚙️ 設定 GAS Proxy'}
-      </button>
-      ${showGAS ? `
-      <div class="gas-box">
-        <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">
-          <b>步驟：</b><br>
-          1. 開 Google Sheets → 擴充功能 → Apps Script<br>
-          2. 貼上程式碼：<br>
-          <code style="display:block;margin:6px 0;padding:8px;background:var(--surface);border-radius:6px;white-space:pre-wrap;font-size:11px;line-height:1.6;">function doGet(e) {
-  var url = e.parameter.url;
-  var resp = UrlFetchApp.fetch(url);
-  return ContentService
-    .createTextOutput(resp.getContentText())
-    .setMimeType(ContentService.MimeType.TEXT);
-}</code>
-          3. 部署 → 新增部署 → 網頁應用程式<br>
-          4. 存取權限選「所有人」→ 部署<br>
-          5. 複製網址貼到下面：
-        </div>
-        <input type="text" id="gasInput" placeholder="https://script.google.com/macros/s/xxx/exec" value="${gasUrl}" />
-        <button class="btn btn-sm btn-primary" style="margin-top:4px;" onclick="saveGAS()">💾 儲存 GAS 網址</button>
-        ${gasUrl ? `<button class="btn btn-sm btn-danger" style="margin-top:4px;margin-left:6px;" onclick="localStorage.removeItem('gasProxyUrl');render()">清除</button>` : ''}
-      </div>` : ''}
-    </div>`;
-}
-
-function saveGAS() {
-  const url = document.getElementById('gasInput').value.trim();
-  if (url) {
-    localStorage.setItem('gasProxyUrl', url);
-    alert('GAS Proxy 已儲存！');
-    render();
-  }
 }
 
 // ====== FETCH ======
@@ -383,7 +395,6 @@ async function fetchData() {
       const url = `https://www.pilio.idv.tw/lto539/list.asp?indexpage=${page}&orderby=new`;
       let html = null;
 
-      // 1) Try GAS proxy
       const gasUrl = localStorage.getItem('gasProxyUrl');
       if (gasUrl) {
         try {
@@ -392,7 +403,6 @@ async function fetchData() {
         } catch(e) { console.log('GAS failed:', e); }
       }
 
-      // 2) Try allorigins
       if (!html) {
         try {
           const r = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
@@ -400,7 +410,6 @@ async function fetchData() {
         } catch(e) { console.log('allorigins failed:', e); }
       }
 
-      // 3) Try corsproxy.io
       if (!html) {
         try {
           const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
@@ -408,7 +417,7 @@ async function fetchData() {
         } catch(e) { console.log('corsproxy failed:', e); }
       }
 
-      if (!html) throw new Error('所有抓取管道都失敗，請設定 GAS Proxy 再試');
+      if (!html) throw new Error('所有抓取管道都失敗，請稍後再試');
 
       const records = parseHTML(html);
       allRecords = allRecords.concat(records);
@@ -418,7 +427,6 @@ async function fetchData() {
 
     allRecords = allRecords.slice(0, count);
 
-    // Merge (skip duplicates)
     const existing = new Set(historyData.map(r => r.date));
     let added = 0;
     allRecords.forEach(r => {
@@ -445,24 +453,20 @@ function updateStatus(type, msg) {
 
 function parseHTML(html) {
   const records = [];
-  // Regex approach: find date patterns like "MM/DD YY(DAY)" followed by numbers
-  // pilio format: "04/06 26(一)" then "07, 11, 17, 31, 34"
-  
-  // First try: structured pattern
+  const text = html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ');
+
   const rowRegex = /(\d{2})\/(\d{2})\s+(\d{2,3})\s*[\(（][一二三四五六日][\)）]/g;
   let match;
-  const text = html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ');
   
   while ((match = rowRegex.exec(text)) !== null) {
     const mm = match[1];
     const dd = match[2];
-    let yy = parseInt(match[3]);
-    // Convert ROC year to AD
-    if (yy < 200) yy += 1911;
-    if (yy < 100) yy += 2000;
-    const dateStr = `${yy}/${mm}/${dd}`;
+    let rawYear = parseInt(match[3]);
+    let adYear;
+    if (rawYear >= 90) { adYear = rawYear + 1911; }
+    else { adYear = rawYear + 2000; }
+    const dateStr = `${adYear}/${mm}/${dd}`;
 
-    // Get the text after this match to find numbers
     const after = text.substring(match.index + match[0].length, match.index + match[0].length + 80);
     const numsMatch = after.match(/(\d{1,2})\s*[,，]\s*(\d{1,2})\s*[,，]\s*(\d{1,2})\s*[,，]\s*(\d{1,2})\s*[,，]\s*(\d{1,2})/);
     
@@ -474,7 +478,6 @@ function parseHTML(html) {
     }
   }
 
-  // Fallback: try "YYYY MM/DD" format (lotto-8 style)
   if (records.length === 0) {
     const rowRegex2 = /(\d{4})\s+(\d{2})\/(\d{2})\s*[\(（][一二三四五六日][\)）]/g;
     while ((match = rowRegex2.exec(text)) !== null) {
@@ -496,20 +499,6 @@ function parseHTML(html) {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ====== CORE ======
-
-function addRecord() {
-  const date = document.getElementById('dateInput').value.trim();
-  const nums = [1,2,3,4,5].map(i => parseInt(document.getElementById('n'+i).value));
-  if (!date) return alert('請輸入日期');
-  if (nums.some(n => isNaN(n) || n < 1 || n > 39)) return alert('號碼必須在 1-39 之間');
-  if (new Set(nums).size !== 5) return alert('5 個號碼不可重複');
-  nums.sort((a,b) => a-b);
-  const dup = historyData.findIndex(r => r.date === date);
-  if (dup !== -1) { if (!confirm(`${date} 已有紀錄，要覆蓋嗎？`)) return; historyData[dup].nums = nums; }
-  else historyData.push({ date, nums });
-  historyData.sort((a,b) => a.date.localeCompare(b.date));
-  save(); render();
-}
 
 function delRecord(i) { historyData.splice(i, 1); save(); render(); }
 function clearAll() { if (confirm('確定清除？')) { historyData = []; save(); render(); } }
@@ -541,11 +530,11 @@ function buildFreqGrid() {
   return Array.from({length: 39}, (_, i) => {
     const n = i + 1, ratio = freq[n] / max;
     let bg;
-    if (ratio === 0) bg = 'rgba(255,255,255,0.03)';
-    else if (ratio < 0.3) bg = `rgba(0,212,255,${0.15 + ratio})`;
-    else if (ratio < 0.6) bg = `rgba(168,85,247,${0.2 + ratio * 0.5})`;
-    else bg = `rgba(240,192,64,${0.3 + ratio * 0.5})`;
-    return `<div class="freq-cell" style="background:${bg};color:${ratio > 0.5 ? '#1a1a2e' : '#ccc'}">
+    if (ratio === 0) bg = 'rgba(212,160,23,0.03)';
+    else if (ratio < 0.3) bg = `rgba(139,105,20,${0.2 + ratio})`;
+    else if (ratio < 0.6) bg = `rgba(212,160,23,${0.2 + ratio * 0.5})`;
+    else bg = `rgba(255,215,0,${0.3 + ratio * 0.5})`;
+    return `<div class="freq-cell" style="background:${bg};color:${ratio > 0.5 ? '#1a0f00' : 'var(--cream)'}">
       ${String(n).padStart(2,'0')}<span class="tip">${n}號：${freq[n]}次</span></div>`;
   }).join('');
 }
@@ -557,7 +546,7 @@ function predict() {
     const p = genPredict();
     el.innerHTML = `<div class="predict-result">
       <div class="predict-balls">${p.map(n => `<div class="predict-ball">${String(n).padStart(2,'0')}</div>`).join('')}</div>
-      <div style="font-size:12px;color:var(--text-dim);margin-top:8px;">基於 ${historyData.length} 期資料 · ${todayStr()}</div>
+      <div style="font-size:12px;color:var(--gold);margin-top:8px;">基於 ${historyData.length} 期資料 · ${todayStr()}</div>
     </div>`;
   }, 1200);
 }
@@ -580,6 +569,20 @@ function genPredict() {
   for (let i = cands.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [cands[i],cands[j]] = [cands[j],cands[i]]; }
   return cands.slice(0, 5).sort((a,b) => a-b);
 }
+
+// Fix existing bad dates on load
+(function fixDates() {
+  let fixed = false;
+  historyData.forEach(r => {
+    const y = parseInt(r.date.split('/')[0]);
+    if (y >= 1912 && y <= 1970) {
+      const corrected = y - 1911 + 2000;
+      r.date = r.date.replace(/^\d{4}/, String(corrected));
+      fixed = true;
+    }
+  });
+  if (fixed) { historyData.sort((a,b) => a.date.localeCompare(b.date)); save(); }
+})();
 
 render();
 </script>
