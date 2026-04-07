@@ -316,7 +316,7 @@ function render() {
     </div>
 
     <div class="card">
-      <div class="card-title"><span class="icon">🌐</span> 開獎紀錄</div>
+      <div class="card-title"><span class="icon">🏆</span> 開獎紀錄</div>
       <div class="input-row">
         <div class="input-group">
           <label>抓取期數</label>
@@ -328,7 +328,7 @@ function render() {
           </select>
         </div>
       </div>
-      <button class="btn btn-fetch" onclick="fetchData()" id="fetchBtn">🌐 台彩號碼紀錄</button>
+      <button class="btn btn-fetch" onclick="fetchData()" id="fetchBtn"><span class="btn-text-rotate"></span></button>
       ${fetchStatusObj ? `<div class="fetch-status ${fetchStatusObj.type}">${fetchStatusObj.type === 'loading' ? '<div class="loading-bar"></div>' : ''}${fetchStatusObj.msg}</div>` : ''}
     </div>
 
@@ -368,15 +368,36 @@ function render() {
       <div class="disclaimer"></div>
     </div>
   `;
+  // Start button text rotation
+  startBtnRotation();
 }
 
-// ====== FETCH ======
+const btnTexts = ['💰 財運滾滾來', '🧧 台彩致富快點來'];
+let btnTextIdx = 0;
+let btnInterval = null;
+function startBtnRotation() {
+  if (btnInterval) clearInterval(btnInterval);
+  const el = document.querySelector('.btn-text-rotate');
+  if (!el) return;
+  el.textContent = btnTexts[btnTextIdx];
+  btnInterval = setInterval(() => {
+    btnTextIdx = (btnTextIdx + 1) % btnTexts.length;
+    if (el.isConnected) {
+      el.style.transition = 'opacity 0.3s';
+      el.style.opacity = '0';
+      setTimeout(() => {
+        el.textContent = btnTexts[btnTextIdx];
+        el.style.opacity = '1';
+      }, 300);
+    }
+  }, 2000);
+}
 
 async function fetchData() {
   const count = parseInt(document.getElementById('fetchCount').value);
   document.getElementById('fetchBtn').disabled = true;
   
-  fetchStatusObj = { type: 'loading', msg: `正在抓取最近 ${count} 期資料...` };
+  fetchStatusObj = { type: 'loading', msg: `讀取致富代碼...` };
   render();
 
   try {
@@ -384,7 +405,7 @@ async function fetchData() {
     let allRecords = [];
 
     for (let page = 1; page <= pages; page++) {
-      updateStatus('loading', `正在抓取第 ${page}/${pages} 頁...`);
+      updateStatus('loading', `讀取致富代碼...`);
 
       const url = `https://www.pilio.idv.tw/lto539/list.asp?indexpage=${page}&orderby=new`;
       let html = null;
