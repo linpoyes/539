@@ -538,22 +538,50 @@ function exportData() {
   const col1 = data.slice(0, half);
   const col2 = data.slice(half);
 
-  // Calculate period number from date: format 民國年+6位流水號
-  // 539 draws Mon-Sat, period resets each year
+  // Calculate period number using known anchor: 2026/04/06 = 115000085
+  // Period increments by 1 for each draw day (Mon-Sat, no Sun)
+  // Resets at start of each ROC year
   function calcPeriod(dateStr) {
     const [y, m, d] = dateStr.split('/').map(Number);
     const rocYear = y - 1911;
-    // Count draw days from Jan 1 of that year to this date
-    const startOfYear = new Date(y, 0, 1);
     const thisDate = new Date(y, m - 1, d);
-    let drawCount = 0;
-    const cur = new Date(startOfYear);
-    while (cur <= thisDate) {
-      const dow = cur.getDay(); // 0=Sun
-      if (dow >= 1 && dow <= 6) drawCount++; // Mon-Sat
-      cur.setDate(cur.getDate() + 1);
+    
+    // Anchor: 2026/04/06 = period 85 of ROC year 115
+    const anchorDate = new Date(2026, 3, 6); // April 6, 2026
+    const anchorYear = 2026;
+    const anchorPeriod = 85;
+    
+    if (y === anchorYear) {
+      // Same year: count draw days between anchor and this date
+      let diff = 0;
+      if (thisDate >= anchorDate) {
+        const cur = new Date(anchorDate);
+        cur.setDate(cur.getDate() + 1);
+        while (cur <= thisDate) {
+          if (cur.getDay() >= 1 && cur.getDay() <= 6) diff++;
+          cur.setDate(cur.getDate() + 1);
+        }
+        return `${rocYear}${String(anchorPeriod + diff).padStart(6, '0')}`;
+      } else {
+        const cur = new Date(thisDate);
+        cur.setDate(cur.getDate() + 1);
+        while (cur <= anchorDate) {
+          if (cur.getDay() >= 1 && cur.getDay() <= 6) diff++;
+          cur.setDate(cur.getDate() + 1);
+        }
+        return `${rocYear}${String(anchorPeriod - diff).padStart(6, '0')}`;
+      }
+    } else {
+      // Different year: count draw days from Jan 1 of that year
+      const startOfYear = new Date(y, 0, 1);
+      let drawCount = 0;
+      const cur = new Date(startOfYear);
+      while (cur <= thisDate) {
+        if (cur.getDay() >= 1 && cur.getDay() <= 6) drawCount++;
+        cur.setDate(cur.getDate() + 1);
+      }
+      return `${rocYear}${String(drawCount).padStart(6, '0')}`;
     }
-    return `${rocYear}${String(drawCount).padStart(6, '0')}`;
   }
 
   const buildCol = (arr) => arr.map(r => 
