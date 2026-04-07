@@ -345,7 +345,6 @@ function render() {
           }).join('')}</div>
         <div class="actions-row">
           <button class="btn btn-sm btn-outline" onclick="exportData()">📰 匯出報表</button>
-          <button class="btn btn-sm btn-outline" onclick="importData()">📥 匯入</button>
           <button class="btn btn-sm btn-danger" onclick="clearAll()">🗑 清除</button>
         </div>`}
     </div>
@@ -528,9 +527,9 @@ function exportData() {
   ).join('');
 
   const printHTML = `<!DOCTYPE html>
-<html><head><meta charset="UTF-8">
+<html><head><meta charset="UTF-8"><title> </title>
 <style>
-  @page { size: A4; margin: 12mm; }
+  @page { size: A4; margin: 12mm; margin-top: 8mm; margin-bottom: 8mm; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif; color: #1a1a1a; background: #fffdf5; }
 
@@ -539,10 +538,6 @@ function exportData() {
   /* ===== 報頭 ===== */
   .masthead {
     text-align: center; border-bottom: 4px double #1a1a1a; padding-bottom: 10px; margin-bottom: 6px;
-  }
-  .masthead-top {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 10px; color: #666; margin-bottom: 4px;
   }
   .masthead h1 {
     font-size: 36px; font-weight: 900; letter-spacing: 12px;
@@ -612,6 +607,7 @@ function exportData() {
   @media print {
     body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .paper { padding: 0; }
+    @page { margin: 10mm; }
   }
 </style>
 </head><body>
@@ -619,11 +615,6 @@ function exportData() {
   <div class="stamp">大發利市</div>
 
   <div class="masthead">
-    <div class="masthead-top">
-      <span>第 ${historyData.length} 期資料收錄</span>
-      <span>民國 ${new Date().getFullYear() - 1911} 年</span>
-      <span>${today} 印製</span>
-    </div>
     <h1>今彩五三九</h1>
     <div class="slogan">開 獎 號 碼 總 覽</div>
   </div>
