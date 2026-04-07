@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今彩539 預測系統</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a1a;
+    --surface: #12122a;
+    --surface2: #1a1a3a;
+    --gold: #f0c040;
+    --neon-blue: #00d4ff;
+    --neon-purple: #a855f7;
+    --text: #e8e8f0;
+    --text-dim: #8888aa;
+    --red: #ef4444;
+    --green: #22c55e;
+    --border: rgba(255,255,255,0.06);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+      radial-gradient(ellipse at 20% 0%, rgba(168,85,247,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(0,212,255,0.06) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .container { max-width: 640px; margin: 0 auto; padding: 20px 16px 40px; position: relative; z-index: 1; }
+
+  .header { text-align: center; padding: 30px 0 20px; }
+  .header h1 {
+    font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), #ffe08a, var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px;
+  }
+  .header .sub { font-size: 13px; color: var(--text-dim); margin-top: 6px; letter-spacing: 4px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px; margin-bottom: 16px;
+    position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-purple), var(--neon-blue), transparent); opacity: 0.6;
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; color: var(--neon-blue);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .icon {
+    width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+    background: rgba(0,212,255,0.1); border-radius: 6px; font-size: 14px;
+  }
+
+  .input-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-end; }
+  .input-group { flex: 1; }
+  .input-group label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
+  .input-group input, .input-group select {
+    width: 100%; padding: 10px 12px; background: var(--bg);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+    color: var(--text); font-size: 15px; font-family: 'Orbitron', sans-serif; outline: none; transition: border-color 0.2s;
+  }
+  .input-group input:focus, .input-group select:focus { border-color: var(--neon-blue); box-shadow: 0 0 12px rgba(0,212,255,0.15); }
+  .input-group input::placeholder { color: #555; font-family: 'Noto Sans TC', sans-serif; font-size: 13px; }
+  .input-group select option { background: var(--bg); color: var(--text); }
+
+  .number-inputs { display: flex; gap: 6px; }
+  .number-inputs input {
+    width: 100%; text-align: center; padding: 10px 4px; background: var(--bg);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+    color: var(--gold); font-size: 18px; font-family: 'Orbitron', sans-serif;
+    font-weight: 700; outline: none; transition: all 0.2s;
+  }
+  .number-inputs input:focus { border-color: var(--gold); box-shadow: 0 0 12px rgba(240,192,64,0.2); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 12px 20px; border: none; border-radius: 10px;
+    font-size: 14px; font-weight: 700; font-family: 'Noto Sans TC', sans-serif;
+    cursor: pointer; transition: all 0.25s; width: 100%;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: #fff; box-shadow: 0 4px 20px rgba(0,212,255,0.2); }
+  .btn-gold { background: linear-gradient(135deg, var(--gold), #e6a800); color: #1a1a2e; box-shadow: 0 4px 20px rgba(240,192,64,0.25); font-size: 16px; padding: 14px 20px; }
+  .btn-green { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; box-shadow: 0 4px 20px rgba(34,197,94,0.2); }
+  .btn-sm { padding: 8px 14px; font-size: 13px; width: auto; }
+  .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--text-dim); }
+  .btn-outline:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
+  .btn-danger { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .history-list { max-height: 300px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--surface2) transparent; }
+  .history-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 10px; }
+  .history-item:last-child { border-bottom: none; }
+  .history-date { font-size: 11px; color: var(--text-dim); min-width: 80px; font-family: 'Orbitron', sans-serif; }
+  .history-balls { display: flex; gap: 5px; flex: 1; }
+  .ball {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 13px; color: #fff;
+    background: linear-gradient(145deg, #2a2a5a, #1a1a3a); border: 2px solid rgba(255,255,255,0.1);
+  }
+  .history-del { background: none; border: none; color: #555; cursor: pointer; font-size: 16px; padding: 4px; }
+  .history-del:hover { color: var(--red); }
+
+  .predict-result { text-align: center; padding: 10px 0; }
+  .predict-balls { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+  .predict-ball {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 20px; color: #1a1a2e;
+    background: linear-gradient(145deg, #ffe08a, var(--gold), #c8960a);
+    box-shadow: 0 4px 20px rgba(240,192,64,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  }
+  .predict-ball:nth-child(2) { animation-delay: 0.1s; }
+  .predict-ball:nth-child(3) { animation-delay: 0.2s; }
+  .predict-ball:nth-child(4) { animation-delay: 0.3s; }
+  .predict-ball:nth-child(5) { animation-delay: 0.4s; }
+  @keyframes popIn { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+
+  .freq-grid { display: grid; grid-template-columns: repeat(13, 1fr); gap: 3px; }
+  .freq-cell {
+    aspect-ratio: 1; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; font-family: 'Orbitron', sans-serif;
+    position: relative; cursor: default; transition: transform 0.15s;
+  }
+  .freq-cell:hover { transform: scale(1.2); z-index: 2; }
+  .freq-cell .tip {
+    display: none; position: absolute; bottom: 110%;
+    background: var(--surface2); color: var(--text); padding: 4px 8px; border-radius: 6px;
+    font-size: 11px; white-space: nowrap; font-family: 'Noto Sans TC', sans-serif;
+    border: 1px solid var(--border); z-index: 10;
+  }
+  .freq-cell:hover .tip { display: block; }
+
+  .method-tag {
+    display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px;
+    background: rgba(168,85,247,0.15); color: var(--neon-purple); border: 1px solid rgba(168,85,247,0.2); margin: 2px;
+  }
+  .disclaimer { text-align: center; font-size: 11px; color: #555; margin-top: 12px; line-height: 1.6; }
+  .empty-state { text-align: center; color: var(--text-dim); padding: 30px 0; font-size: 13px; }
+  .actions-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 10px;
+    font-size: 12px; background: rgba(0,212,255,0.1); color: var(--neon-blue); margin-left: auto;
+  }
+
+  .fetch-status {
+    padding: 10px 14px; border-radius: 10px; font-size: 13px; margin-top: 12px; line-height: 1.6;
+  }
+  .fetch-status.loading { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.15); color: var(--neon-blue); }
+  .fetch-status.success { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.15); color: var(--green); }
+  .fetch-status.error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.15); color: var(--red); }
+
+  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+  .loading-bar {
+    height: 3px; border-radius: 2px; margin: 8px 0;
+    background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), transparent);
+    background-size: 200% 100%; animation: shimmer 1.5s infinite;
+  }
+
+  .fetch-info {
+    font-size: 12px; color: var(--text-dim); margin-top: 10px; line-height: 1.7;
+    background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;
+    border: 1px dashed rgba(255,255,255,0.06);
+  }
+  .fetch-info code {
+    background: rgba(0,212,255,0.1); padding: 1px 6px; border-radius: 4px;
+    font-size: 11px; color: var(--neon-blue);
+  }
+
+  .tab-row { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tab-btn {
+    flex: 1; padding: 10px; text-align: center; border-radius: 10px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.08); background: var(--bg); color: var(--text-dim);
+    transition: all 0.2s; font-family: 'Noto Sans TC', sans-serif;
+  }
+  .tab-btn.active { background: rgba(0,212,255,0.1); border-color: var(--neon-blue); color: var(--neon-blue); }
+
+  .gas-box {
+    margin-top: 12px; padding: 14px; background: var(--bg); border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .gas-box input {
+    width: 100%; padding: 8px 12px; background: var(--surface2);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+    color: var(--neon-blue); font-size: 12px; outline: none; margin: 8px 0;
+    font-family: monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="app"></div>
+
+<script>
+const APP_KEY = 'lotto539_data_v3';
+let historyData = JSON.parse(localStorage.getItem(APP_KEY) || '[]');
+let fetchStatusObj = null;
+let inputTab = 'fetch';
+let showGAS = false;
+
+function save() { localStorage.setItem(APP_KEY, JSON.stringify(historyData)); }
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function render() {
+  document.getElementById('app').innerHTML = `
+    <div class="header">
+      <h1>539 PREDICT</h1>
+      <div class="sub">今 彩 預 測 系 統</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📝</span> 新增開獎紀錄</div>
+      <div class="tab-row">
+        <button class="tab-btn ${inputTab==='fetch'?'active':''}" onclick="inputTab='fetch';render()">🌐 線上抓取</button>
+        <button class="tab-btn ${inputTab==='manual'?'active':''}" onclick="inputTab='manual';render()">✏️ 手動輸入</button>
+      </div>
+      ${inputTab === 'manual' ? renderManual() : renderFetch()}
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> 歷史紀錄 <span class="badge">${historyData.length} 期</span></div>
+      ${historyData.length === 0 
+        ? '<div class="empty-state">尚無紀錄，請先抓取或手動輸入開獎號碼</div>' 
+        : `<div class="history-list">${historyData.slice().reverse().map((r, ri) => {
+            const idx = historyData.length - 1 - ri;
+            return `<div class="history-item">
+              <span class="history-date">${r.date}</span>
+              <div class="history-balls">${r.nums.map(n => `<span class="ball">${String(n).padStart(2,'0')}</span>`).join('')}</div>
+              <button class="history-del" onclick="delRecord(${idx})">✕</button>
+            </div>`;
+          }).join('')}</div>
+        <div class="actions-row">
+          <button class="btn btn-sm btn-outline" onclick="exportData()">📤 匯出</button>
+          <button class="btn btn-sm btn-outline" onclick="importData()">📥 匯入</button>
+          <button class="btn btn-sm btn-danger" onclick="clearAll()">🗑 清除</button>
+        </div>`}
+    </div>
+
+    ${historyData.length > 0 ? `
+    <div class="card">
+      <div class="card-title"><span class="icon">🔥</span> 號碼頻率熱力圖</div>
+      <div class="freq-grid">${buildFreqGrid()}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:11px;color:var(--text-dim)">
+        <span>🧊 冷號</span><span>🔥 熱號</span>
+      </div>
+    </div>` : ''}
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🎯</span> AI 預測號碼</div>
+      ${historyData.length < 3 
+        ? '<div class="empty-state">至少需要 <b>3 期</b>歷史資料才能預測</div>'
+        : `<div style="margin-bottom:12px;">
+          <span class="method-tag">頻率分析</span>
+          <span class="method-tag">冷熱交替</span>
+          <span class="method-tag">間隔統計</span>
+          <span class="method-tag">權重計算</span>
+        </div>
+        <button class="btn btn-gold" onclick="predict()">⚡ 產生今日預測號碼</button>
+        <div id="predictResult"></div>`}
+      <div class="disclaimer">⚠ 僅供娛樂參考，不保證中獎，請理性投注</div>
+    </div>
+  `;
+}
+
+function renderManual() {
+  return `
+    <div class="input-row">
+      <div class="input-group">
+        <label>開獎日期</label>
+        <input type="text" id="dateInput" placeholder="例: 2026/04/07" value="${todayStr()}" />
+      </div>
+    </div>
+    <label style="font-size:12px;color:var(--text-dim);margin-bottom:6px;display:block;">開獎號碼 (1-39)</label>
+    <div class="number-inputs">
+      <input type="number" id="n1" min="1" max="39" placeholder="01">
+      <input type="number" id="n2" min="1" max="39" placeholder="02">
+      <input type="number" id="n3" min="1" max="39" placeholder="03">
+      <input type="number" id="n4" min="1" max="39" placeholder="04">
+      <input type="number" id="n5" min="1" max="39" placeholder="05">
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn btn-primary" onclick="addRecord()">✚ 新增紀錄</button>
+    </div>`;
+}
+
+function renderFetch() {
+  const gasUrl = localStorage.getItem('gasProxyUrl') || '';
+  return `
+    <div class="input-row">
+      <div class="input-group">
+        <label>抓取期數</label>
+        <select id="fetchCount">
+          <option value="30">最近 30 期</option>
+          <option value="60">最近 60 期</option>
+          <option value="100" selected>最近 100 期</option>
+          <option value="200">最近 200 期</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-green" onclick="fetchData()" id="fetchBtn">🌐 一鍵抓取台彩歷史開獎號碼</button>
+    ${fetchStatusObj ? `<div class="fetch-status ${fetchStatusObj.type}">${fetchStatusObj.type === 'loading' ? '<div class="loading-bar"></div>' : ''}${fetchStatusObj.msg}</div>` : ''}
+    
+    <div class="fetch-info">
+      💡 資料來源：<b>樂透彩幸運發財網</b> (pilio.idv.tw)<br>
+      透過 CORS Proxy 抓取，若失敗可自建 GAS Proxy。
+      <button class="btn btn-sm btn-outline" style="margin-top:8px;" onclick="showGAS=!showGAS;render()">
+        ${showGAS ? '▲ 收起' : '⚙️ 設定 GAS Proxy'}
+      </button>
+      ${showGAS ? `
+      <div class="gas-box">
+        <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">
+          <b>步驟：</b><br>
+          1. 開 Google Sheets → 擴充功能 → Apps Script<br>
+          2. 貼上程式碼：<br>
+          <code style="display:block;margin:6px 0;padding:8px;background:var(--surface);border-radius:6px;white-space:pre-wrap;font-size:11px;line-height:1.6;">function doGet(e) {
+  var url = e.parameter.url;
+  var resp = UrlFetchApp.fetch(url);
+  return ContentService
+    .createTextOutput(resp.getContentText())
+    .setMimeType(ContentService.MimeType.TEXT);
+}</code>
+          3. 部署 → 新增部署 → 網頁應用程式<br>
+          4. 存取權限選「所有人」→ 部署<br>
+          5. 複製網址貼到下面：
+        </div>
+        <input type="text" id="gasInput" placeholder="https://script.google.com/macros/s/xxx/exec" value="${gasUrl}" />
+        <button class="btn btn-sm btn-primary" style="margin-top:4px;" onclick="saveGAS()">💾 儲存 GAS 網址</button>
+        ${gasUrl ? `<button class="btn btn-sm btn-danger" style="margin-top:4px;margin-left:6px;" onclick="localStorage.removeItem('gasProxyUrl');render()">清除</button>` : ''}
+      </div>` : ''}
+    </div>`;
+}
+
+function saveGAS() {
+  const url = document.getElementById('gasInput').value.trim();
+  if (url) {
+    localStorage.setItem('gasProxyUrl', url);
+    alert('GAS Proxy 已儲存！');
+    render();
+  }
+}
+
+// ====== FETCH ======
+
+async function fetchData() {
+  const count = parseInt(document.getElementById('fetchCount').value);
+  document.getElementById('fetchBtn').disabled = true;
+  
+  fetchStatusObj = { type: 'loading', msg: `正在抓取最近 ${count} 期資料...` };
+  render();
+
+  try {
+    const pages = Math.ceil(count / 30);
+    let allRecords = [];
+
+    for (let page = 1; page <= pages; page++) {
+      updateStatus('loading', `正在抓取第 ${page}/${pages} 頁...`);
+
+      const url = `https://www.pilio.idv.tw/lto539/list.asp?indexpage=${page}&orderby=new`;
+      let html = null;
+
+      // 1) Try GAS proxy
+      const gasUrl = localStorage.getItem('gasProxyUrl');
+      if (gasUrl) {
+        try {
+          const r = await fetch(`${gasUrl}?url=${encodeURIComponent(url)}`);
+          if (r.ok) html = await r.text();
+        } catch(e) { console.log('GAS failed:', e); }
+      }
+
+      // 2) Try allorigins
+      if (!html) {
+        try {
+          const r = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+          if (r.ok) html = await r.text();
+        } catch(e) { console.log('allorigins failed:', e); }
+      }
+
+      // 3) Try corsproxy.io
+      if (!html) {
+        try {
+          const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
+          if (r.ok) html = await r.text();
+        } catch(e) { console.log('corsproxy failed:', e); }
+      }
+
+      if (!html) throw new Error('所有抓取管道都失敗，請設定 GAS Proxy 再試');
+
+      const records = parseHTML(html);
+      allRecords = allRecords.concat(records);
+      if (allRecords.length >= count) break;
+      if (page < pages) await sleep(600);
+    }
+
+    allRecords = allRecords.slice(0, count);
+
+    // Merge (skip duplicates)
+    const existing = new Set(historyData.map(r => r.date));
+    let added = 0;
+    allRecords.forEach(r => {
+      if (!existing.has(r.date)) { historyData.push(r); added++; }
+    });
+    historyData.sort((a,b) => a.date.localeCompare(b.date));
+    save();
+
+    fetchStatusObj = { type: 'success', msg: `✅ 完成！取得 ${allRecords.length} 期，新增 ${added} 期，跳過 ${allRecords.length - added} 期重複` };
+    render();
+  } catch(err) {
+    fetchStatusObj = { type: 'error', msg: `❌ ${err.message}` };
+    render();
+  }
+}
+
+function updateStatus(type, msg) {
+  const el = document.querySelector('.fetch-status');
+  if (el) {
+    el.className = `fetch-status ${type}`;
+    el.innerHTML = (type === 'loading' ? '<div class="loading-bar"></div>' : '') + msg;
+  }
+}
+
+function parseHTML(html) {
+  const records = [];
+  // Regex approach: find date patterns like "MM/DD YY(DAY)" followed by numbers
+  // pilio format: "04/06 26(一)" then "07, 11, 17, 31, 34"
+  
+  // First try: structured pattern
+  const rowRegex = /(\d{2})\/(\d{2})\s+(\d{2,3})\s*[\(（][一二三四五六日][\)）]/g;
+  let match;
+  const text = html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ');
+  
+  while ((match = rowRegex.exec(text)) !== null) {
+    const mm = match[1];
+    const dd = match[2];
+    let yy = parseInt(match[3]);
+    // Convert ROC year to AD
+    if (yy < 200) yy += 1911;
+    if (yy < 100) yy += 2000;
+    const dateStr = `${yy}/${mm}/${dd}`;
+
+    // Get the text after this match to find numbers
+    const after = text.substring(match.index + match[0].length, match.index + match[0].length + 80);
+    const numsMatch = after.match(/(\d{1,2})\s*[,，]\s*(\d{1,2})\s*[,，]\s*(\d{1,2})\s*[,，]\s*(\d{1,2})\s*[,，]\s*(\d{1,2})/);
+    
+    if (numsMatch) {
+      const nums = [numsMatch[1], numsMatch[2], numsMatch[3], numsMatch[4], numsMatch[5]].map(Number);
+      if (nums.every(n => n >= 1 && n <= 39) && new Set(nums).size === 5) {
+        records.push({ date: dateStr, nums: nums.sort((a,b) => a-b) });
+      }
+    }
+  }
+
+  // Fallback: try "YYYY MM/DD" format (lotto-8 style)
+  if (records.length === 0) {
+    const rowRegex2 = /(\d{4})\s+(\d{2})\/(\d{2})\s*[\(（][一二三四五六日][\)）]/g;
+    while ((match = rowRegex2.exec(text)) !== null) {
+      const dateStr = `${match[1]}/${match[2]}/${match[3]}`;
+      const after = text.substring(match.index + match[0].length, match.index + match[0].length + 80);
+      const numsMatch = after.match(/(\d{1,2})\s*[,，]\s*(\d{1,2})\s*[,，]\s*(\d{1,2})\s*[,，]\s*(\d{1,2})\s*[,，]\s*(\d{1,2})/);
+      if (numsMatch) {
+        const nums = [numsMatch[1], numsMatch[2], numsMatch[3], numsMatch[4], numsMatch[5]].map(Number);
+        if (nums.every(n => n >= 1 && n <= 39) && new Set(nums).size === 5) {
+          records.push({ date: dateStr, nums: nums.sort((a,b) => a-b) });
+        }
+      }
+    }
+  }
+
+  return records;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ====== CORE ======
+
+function addRecord() {
+  const date = document.getElementById('dateInput').value.trim();
+  const nums = [1,2,3,4,5].map(i => parseInt(document.getElementById('n'+i).value));
+  if (!date) return alert('請輸入日期');
+  if (nums.some(n => isNaN(n) || n < 1 || n > 39)) return alert('號碼必須在 1-39 之間');
+  if (new Set(nums).size !== 5) return alert('5 個號碼不可重複');
+  nums.sort((a,b) => a-b);
+  const dup = historyData.findIndex(r => r.date === date);
+  if (dup !== -1) { if (!confirm(`${date} 已有紀錄，要覆蓋嗎？`)) return; historyData[dup].nums = nums; }
+  else historyData.push({ date, nums });
+  historyData.sort((a,b) => a.date.localeCompare(b.date));
+  save(); render();
+}
+
+function delRecord(i) { historyData.splice(i, 1); save(); render(); }
+function clearAll() { if (confirm('確定清除？')) { historyData = []; save(); render(); } }
+
+function exportData() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(historyData, null, 2)], {type:'application/json'}));
+  a.download = '539_history.json'; a.click();
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = e => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try { const d = JSON.parse(ev.target.result); if (Array.isArray(d)) { historyData = d; save(); render(); alert('匯入 ' + d.length + ' 期'); } }
+      catch { alert('檔案格式錯誤'); }
+    };
+    reader.readAsText(e.target.files[0]);
+  };
+  input.click();
+}
+
+function buildFreqGrid() {
+  const freq = {}; for (let i = 1; i <= 39; i++) freq[i] = 0;
+  historyData.forEach(r => r.nums.forEach(n => freq[n]++));
+  const max = Math.max(...Object.values(freq), 1);
+  return Array.from({length: 39}, (_, i) => {
+    const n = i + 1, ratio = freq[n] / max;
+    let bg;
+    if (ratio === 0) bg = 'rgba(255,255,255,0.03)';
+    else if (ratio < 0.3) bg = `rgba(0,212,255,${0.15 + ratio})`;
+    else if (ratio < 0.6) bg = `rgba(168,85,247,${0.2 + ratio * 0.5})`;
+    else bg = `rgba(240,192,64,${0.3 + ratio * 0.5})`;
+    return `<div class="freq-cell" style="background:${bg};color:${ratio > 0.5 ? '#1a1a2e' : '#ccc'}">
+      ${String(n).padStart(2,'0')}<span class="tip">${n}號：${freq[n]}次</span></div>`;
+  }).join('');
+}
+
+function predict() {
+  const el = document.getElementById('predictResult');
+  el.innerHTML = '<div class="loading-bar"></div><div style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:8px;">分析運算中...</div>';
+  setTimeout(() => {
+    const p = genPredict();
+    el.innerHTML = `<div class="predict-result">
+      <div class="predict-balls">${p.map(n => `<div class="predict-ball">${String(n).padStart(2,'0')}</div>`).join('')}</div>
+      <div style="font-size:12px;color:var(--text-dim);margin-top:8px;">基於 ${historyData.length} 期資料 · ${todayStr()}</div>
+    </div>`;
+  }, 1200);
+}
+
+function genPredict() {
+  const freq = {}, lastSeen = {}, rw = {};
+  for (let i = 1; i <= 39; i++) { freq[i] = 0; lastSeen[i] = -1; rw[i] = 0; }
+  historyData.forEach((r, idx) => {
+    r.nums.forEach(n => { freq[n]++; lastSeen[n] = idx; rw[n] += (idx / historyData.length) ** 2; });
+  });
+  const t = historyData.length, maxRW = Math.max(...Object.values(rw), 1), scores = {};
+  for (let i = 1; i <= 39; i++) {
+    const gap = t - 1 - lastSeen[i];
+    const cold = lastSeen[i] === -1 ? 0.8 : Math.min(gap / t, 1) * 0.6;
+    const expGap = t / Math.max(freq[i], 1);
+    const due = gap > expGap ? Math.min((gap - expGap) / expGap, 1) * 0.5 : 0;
+    scores[i] = (freq[i]/t)*0.25 + cold*0.2 + (rw[i]/maxRW)*0.3 + due*0.15 + Math.random()*0.25;
+  }
+  const cands = Object.entries(scores).sort((a,b) => b[1]-a[1]).slice(0, 12).map(x => +x[0]);
+  for (let i = cands.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [cands[i],cands[j]] = [cands[j],cands[i]]; }
+  return cands.slice(0, 5).sort((a,b) => a-b);
+}
+
+render();
+</script>
+</body>
+</html>
